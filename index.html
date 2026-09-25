@@ -21,30 +21,35 @@ Error generating stack: `+o.message+`
   <script>(function(){function m(a){var h=a.getAttribute("href");if(!h)return;try{var u=new URL(h,document.baseURI);if((u.protocol==="http:"||u.protocol==="https:")&&u.host!==location.host){a.target="_blank";a.rel="noopener noreferrer";}}catch(e){}}function s(){document.querySelectorAll("a[href]").forEach(m);}if(document.readyState!=="loading"){s();}else{document.addEventListener("DOMContentLoaded",s);}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a){m(a);}},true);})();</script>
   
 
-<!-- === MOSHLAB VIEWER TRACKING (No Backend) === -->
-<!-- 1. Private Analytics Dashboard: GoatCounter (free, no cookies) - view at https://benfootie.goatcounter.com -->
+<!-- === MOSHLAB VIEWER TRACKING v2 - FIXED === -->
 <script data-goatcounter="https://benfootie.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
-<!-- 2. Visible Counter Badge on site -->
-<script>
-// Simple global view counter using CountAPI - free, no backend
-fetch('https://api.countapi.xyz/hit/benfootie-moshlab/moshlab-views')
-  .then(r => r.json())
-  .then(data => {
-    const el = document.getElementById('moshlab-view-count');
-    if(el) el.textContent = data.value.toLocaleString();
-  })
-  .catch(() => {
-    const el = document.getElementById('moshlab-view-count');
-    if(el) el.textContent = '—';
-  });
-</script>
 <style>
 #moshlab-views{position:fixed;bottom:88px;right:20px;background:#18181b;border:1px solid #27272a;color:#a1a1aa;font-family:monospace;font-size:11px;padding:6px 10px;border-radius:20px;z-index:40;display:flex;gap:6px;align-items:center}
 #moshlab-views b{color:#bef264}
 </style>
 <div id="moshlab-views">👁️ <b id="moshlab-view-count">...</b> views</div>
-<!-- === END TRACKING === -->
+<script>
+(async()=>{
+  const el=document.getElementById('moshlab-view-count');
+  try{
+    // Abacus - reliable, free, no key
+    const r=await fetch('https://abacus.jasoncameron.dev/hit/benfootie/moshlab-views');
+    const j=await r.json();
+    if(j.value){ el.textContent=j.value.toLocaleString(); return; }
+  }catch(e){}
+  try{
+    // Fallback 2: counterapi.dev
+    const r2=await fetch('https://api.counterapi.dev/v1/benfootie-moshlab/moshlab/up');
+    const j2=await r2.json();
+    if(j2.count){ el.textContent=j2.count.toLocaleString(); return; }
+  }catch(e){}
+  // Fallback 3: local count if APIs blocked
+  let c=parseInt(localStorage.getItem('ml_views')||'0')+1;
+  localStorage.setItem('ml_views',c);
+  el.textContent=c.toLocaleString()+' (you)';
+})();
+</script>
+<!-- === END TRACKING v2 === -->
 
 </body>
 </html>
